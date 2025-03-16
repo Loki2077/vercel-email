@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vercel Email API</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #0070f3;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    pre {
+      background: #f6f8fa;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea {
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background: #0070f3;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #005cc5;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+    }
+    .success {
+      background: #e6f7e6;
+      border: 1px solid #c3e6c3;
+    }
+    .error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      background: #f9f9f9;
+    }
+    .tab.active {
+      background: #fff;
+      border-bottom: 2px solid #0070f3;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vercel Email API</h1>
+  
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('documentation')">文档</div>
+    <div class="tab" onclick="switchTab('test')">测试工具</div>
+  </div>
+  
+  <div id="documentation" class="tab-content active">
+    <div class="card">
+      <h2>API 文档</h2>
+      <p>这是一个基于Vercel Serverless Functions的邮件发送API服务。</p>
+      
+      <h3>API端点</h3>
+      <pre><code>POST /api</code></pre>
+      
+      <h3>请求参数</h3>
+      <pre><code>{
+  "to": "收件人邮箱地址",
+  "subject": "邮件主题",
+  "text": "纯文本内容（可选，如果提供html则可不提供）",
+  "html": "HTML格式内容（可选，如果提供text则可不提供）"
+}</code></pre>
+      
+      <h3>响应格式</h3>
+      <p>成功：</p>
+      <pre><code>{
+  "success": true,
+  "messageId": "邮件ID"
+}</code></pre>
+      
+      <p>失败：</p>
+      <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息"
+}</code></pre>
+    </div>
+  </div>
+  
+  <div id="test" class="tab-content">
+    <div class="card">
+      <h2>测试邮件发送</h2>
+      <form id="emailForm">
+        <label for="to">收件人邮箱：</label>
+        <input type="email" id="to" name="to" required>
+        
+        <label for="subject">邮件主题：</label>
+        <input type="text" id="subject" name="subject" required>
+        
+        <label for="content">邮件内容：</label>
+        <textarea id="content" name="content" rows="6" required></textarea>
+        
+        <div>
+          <label>
+            <input type="radio" name="contentType" value="text" checked> 纯文本
+          </label>
+          <label>
+            <input type="radio" name="contentType" value="html"> HTML
+          </label>
+        </div>
+        
+        <button type="submit">发送邮件</button>
+      </form>
+      
+      <div id="result"></div>
+    </div>
+  </div>
+  
+  <script>
+    function switchTab(tabId) {
+      // 隐藏所有内容
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // 取消所有标签的活动状态
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // 显示选中的内容
+      document.getElementById(tabId).classList.add('active');
+      
+      // 设置选中标签的活动状态
+      event.currentTarget.classList.add('active');
+    }
+    
+    document.getElementById('emailForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const to = document.getElementById('to').value;
+      const subject = document.getElementById('subject').value;
+      const content = document.getElementById('content').value;
+      const contentType = document.querySelector('input[name="contentType"]:checked').value;
+      
+      const payload = {
+        to,
+        subject
+      };
+      
+      if (contentType === 'text') {
+        payload.text = content;
+      } else {
+        payload.html = content;
+      }
+      
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '发送中...';
+      resultDiv.className = '';
+      
+      try {
+        const response = await fetch('/api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          resultDiv.innerHTML = `<strong>发送成功!</strong><br>消息ID: ${data.messageId}`;
+          resultDiv.className = 'success';
+        } else {
+          resultDiv.innerHTML = `<strong>发送失败:</strong><br>${data.error}<br>${data.details || ''}`;
+          resultDiv.className = 'error';
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `<strong>请求错误:</strong><br>${error.message}`;
+        resultDiv.className = 'error';
+      }
+    });
+  </script>
+</body>
+</html>

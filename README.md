@@ -1,105 +1,71 @@
-# Vercel 邮件代发 API
+# Vercel Email API
 
-这是一个基于 Vercel Serverless Functions 构建的邮件代发 API 服务，可以接收客户端数据并通过邮件转发。
+这是一个基于Vercel Serverless Functions的邮件发送API服务。
 
 ## 功能特点
 
-- 基于 Vercel Serverless Functions，无需维护服务器
-- 使用 Nodemailer 发送邮件
-- 内置 CORS 安全验证
-- 请求速率限制保护
-- 自动格式化邮件内容
+- 使用Nodemailer发送邮件
+- 支持纯文本和HTML格式邮件
+- 支持跨域请求(CORS)
+- 部署在Vercel平台，无需维护服务器
 
-## 部署步骤
+## 使用方法
 
-1. 克隆此仓库到本地
+### API端点
 
-```bash
-git clone <仓库地址>
-cd vercel-email-api
+```
+POST /api
 ```
 
-2. 安装依赖
+### 请求参数
 
-```bash
-npm install
+```json
+{
+  "to": "收件人邮箱地址",
+  "subject": "邮件主题",
+  "text": "纯文本内容（可选，如果提供html则可不提供）",
+  "html": "HTML格式内容（可选，如果提供text则可不提供）"
+}
 ```
 
-3. 在 Vercel 上设置环境变量
+### 响应格式
 
-在 Vercel 控制台中，为项目添加以下环境变量：
+成功：
+```json
+{
+  "success": true,
+  "messageId": "邮件ID"
+}
+```
 
-- `MAIL_USER`: 发送邮件的邮箱地址
-- `MAIL_PASS`: 邮箱的授权码（不是登录密码）
-
-> **重要提示**：必须在 Vercel 平台上直接设置这些环境变量，而不是作为密钥引用。在 Vercel 控制台中，导航到你的项目 → Settings → Environment Variables，然后添加这两个变量及其值。
-
-4. 部署到 Vercel
-
-```bash
-npm run deploy
+失败：
+```json
+{
+  "error": "错误信息",
+  "details": "详细错误信息"
+}
 ```
 
 ## 本地开发
 
-1. 创建 `.env` 文件并添加以下内容：
+1. 克隆仓库
+2. 安装依赖：`npm install`
+3. 创建`.env`文件并设置以下环境变量：
+   ```
+   MAIL_USER=你的邮箱地址
+   MAIL_PASS=你的邮箱密码或授权码
+   ```
+4. 使用Vercel CLI进行本地开发：`vercel dev`
 
-```
-MAIL_USER=your-email@example.com
-MAIL_PASS=your-email-password-or-app-password
-```
+## 部署到Vercel
 
-2. 启动本地开发服务器
+1. 安装Vercel CLI：`npm i -g vercel`
+2. 登录Vercel：`vercel login`
+3. 部署项目：`vercel`
+4. 在Vercel控制台中设置环境变量`MAIL_USER`和`MAIL_PASS`
 
-```bash
-npm run dev
-```
+## 注意事项
 
-## API 使用说明
-
-### 发送邮件
-
-**请求方式**：POST
-
-**接口地址**：`https://your-vercel-domain.vercel.app/api/send-info`
-
-**请求头**：
-```
-Content-Type: application/json
-```
-
-**请求体**：
-```json
-{
-  "to": "recipient@example.com",  // 收件人邮箱（必填）
-  "subject": "邮件主题",        // 邮件主题（可选）
-  "content": "纯文本内容",      // 纯文本内容（可选）
-  "html": "<p>HTML内容</p>",    // HTML内容（可选）
-  "from_name": "发件人名称"     // 发件人名称（可选）
-}
-```
-
-**成功响应**：
-```json
-{
-  "success": true,
-  "message": "邮件发送成功"
-}
-```
-
-**错误响应**：
-```json
-{
-  "error": "错误类型",
-  "message": "错误详情"
-}
-```
-
-## 安全说明
-
-- 仅支持 POST 请求方法
-- 请妥善保管您的 Vercel 部署地址，避免被滥用
-
-## 自定义配置
-
-如需修改允许的域名、邮件模板或其他配置，请编辑 `api/send-info.js` 文件。
+- 确保邮箱服务提供商允许SMTP访问
+- 对于QQ邮箱，需要在邮箱设置中开启SMTP服务并获取授权码
+- 保护好你的邮箱凭据，不要将`.env`文件提交到版本控制系统中
