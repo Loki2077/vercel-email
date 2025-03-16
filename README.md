@@ -32,6 +32,8 @@ npm install
 - `MAIL_USER`: 发送邮件的邮箱地址
 - `MAIL_PASS`: 邮箱的授权码（不是登录密码）
 
+> **重要提示**：必须在 Vercel 平台上直接设置这些环境变量，而不是作为密钥引用。在 Vercel 控制台中，导航到你的项目 → Settings → Environment Variables，然后添加这两个变量及其值。
+
 4. 部署到 Vercel
 
 ```bash

@@ -6,8 +6,6 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
-  "env": {
-    "MAIL_USER": "@mail_user",
-    "MAIL_PASS": "@mail_pass"
-  }
+  "env": {}
+  // 注意：请在Vercel平台上直接设置MAIL_USER和MAIL_PASS环境变量
 }

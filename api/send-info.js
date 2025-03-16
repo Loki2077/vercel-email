@@ -23,7 +23,7 @@ const runCorsMiddleware = (req, res) => {
 // 速率限制 - 简单实现
 const rateLimits = {};
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1分钟窗口
-const MAX_REQUESTS = 5; // 每个IP每分钟最多5个请求
+const MAX_REQUESTS = 12; // 每个IP每分钟最多12个请求
 
 const checkRateLimit = (ip) => {
   const now = Date.now();
