@@ -175,12 +175,9 @@ module.exports = async (req, res) => {
     
     // 返回友好的错误信息，不暴露敏感的错误详情
     return res.status(500).json({
-    status: 'error',
-    code: 500,
-    message: 'Email delivery failed',
-    data: process.env.NODE_ENV === 'production' ? null : {
-        errorDetails: error.message
-    }
+      error: '发送邮件失败',
+      details: error.message,
+    //   details: process.env.NODE_ENV === 'production' ? '服务器内部错误' : error.message,
     });
   }
 };
