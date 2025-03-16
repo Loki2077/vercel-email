@@ -8,8 +8,7 @@
     "deploy": "vercel deploy --prod"
   },
   "dependencies": {
-    "nodemailer": "^6.9.5",
-    "cors": "^2.8.5"
+    "nodemailer": "^6.9.5"
   },
   "devDependencies": {
     "vercel": "^32.3.0"

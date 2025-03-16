@@ -66,16 +66,16 @@ npm run dev
 **请求头**：
 ```
 Content-Type: application/json
-Origin: arol.top 或 www.arol.top
 ```
 
 **请求体**：
 ```json
 {
-  "name": "测试用户",
-  "email": "user@example.com",
-  "message": "这是一条测试消息",
-  // 其他任意字段...
+  "to": "recipient@example.com",  // 收件人邮箱（必填）
+  "subject": "邮件主题",        // 邮件主题（可选）
+  "content": "纯文本内容",      // 纯文本内容（可选）
+  "html": "<p>HTML内容</p>",    // HTML内容（可选）
+  "from_name": "发件人名称"     // 发件人名称（可选）
 }
 ```
 
@@ -97,9 +97,8 @@ Origin: arol.top 或 www.arol.top
 
 ## 安全说明
 
-- API 仅接受来自允许的域名的请求
-- 实现了基本的速率限制（每IP每分钟最多5个请求）
 - 仅支持 POST 请求方法
+- 请妥善保管您的 Vercel 部署地址，避免被滥用
 
 ## 自定义配置
 
