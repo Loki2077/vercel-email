@@ -1,0 +1,22 @@
+{
+  "name": "vercel-email-api",
+  "version": "1.0.0",
+  "description": "邮件代发API服务",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.5",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "vercel": "^32.3.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
