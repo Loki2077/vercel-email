@@ -110,18 +110,18 @@
     <div class="card">
       <h2>API 文档</h2>
       <p>这是一个基于Vercel Serverless Functions的邮件发送API服务。</p>
-      
       <h3>API端点</h3>
       <pre><code>POST /api</code></pre>
-      
       <h3>请求参数</h3>
-      <pre><code>{
-  "to": "收件人邮箱地址",
-  "subject": "邮件主题",
-  "text": "纯文本内容（可选，如果提供html则可不提供）",
-  "html": "HTML格式内容（可选，如果提供text则可不提供）"
-}</code></pre>
-      
+        <pre><code>
+        {
+        "to": "收件人邮箱地址",
+        "subject": "邮件主题",
+        "text": "纯文本内容（可选，html 和 text 必须提供一个）",
+        "html": "HTML格式内容（可选，html 和 text 必须提供一个）",
+        "from_name": "发送者名称（可选）"
+        }
+        </code></pre>
       <h3>响应格式</h3>
       <p>成功：</p>
       <pre><code>{
