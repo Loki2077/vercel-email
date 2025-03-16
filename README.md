@@ -25,8 +25,9 @@ POST /api
 {
   "to": "收件人邮箱地址",
   "subject": "邮件主题",
-  "text": "纯文本内容（可选，如果提供html则可不提供）",
-  "html": "HTML格式内容（可选，如果提供text则可不提供）"
+  "text": "纯文本内容（可选，html 和 text 必须提供一个）",
+  "html": "HTML格式内容（可选，html 和 text 必须提供一个）",
+  "from_name": "发送者名称（可选）"
 }
 ```
 
