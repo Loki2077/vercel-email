@@ -116,7 +116,7 @@ module.exports = async (req, res) => {
       return res.status(413).json({ error: '请求体过大' });
     }
     
-    const { to, subject, text, html } = req.body;
+    const { to,from_name, subject, text, html } = req.body;
 
     // 验证必要的字段
     if (!to || !subject || (!text && !html)) {
@@ -151,9 +151,9 @@ module.exports = async (req, res) => {
     
     // 设置邮件选项
     const mailOptions = {
-      from: `"Vercel Email API" <${process.env.MAIL_USER}>`,
+      from: from_name != null ? from_name : "Vercel Email API" + ` <${process.env.MAIL_USER}>`,
       to,
-      subject,
+      subject, 
       text,
       html,
     };
@@ -175,9 +175,12 @@ module.exports = async (req, res) => {
     
     // 返回友好的错误信息，不暴露敏感的错误详情
     return res.status(500).json({
-      error: '发送邮件失败',
-      details: error.message,
-    //   details: process.env.NODE_ENV === 'production' ? '服务器内部错误' : error.message,
+    status: 'error',
+    code: 500,
+    message: 'Email delivery failed',
+    data: process.env.NODE_ENV === 'production' ? null : {
+        errorDetails: error.message
+    }
     });
   }
 };

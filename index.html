@@ -140,7 +140,13 @@
   <div id="test" class="tab-content">
     <div class="card">
       <h2>测试邮件发送</h2>
-      <form id="emailForm">
+      <div class="status-indicator">
+  <div id="loading" style="display:none;">发送中...</div>
+  <div id="success" style="display:none;">✓ 发送成功</div>
+  <div id="error-message" class="error-box"></div>
+</div>
+
+<form id="emailForm">
         <label for="to">收件人邮箱：</label>
         <input type="email" id="to" name="to" required>
         
@@ -161,6 +167,25 @@
         
         <button type="submit">发送邮件</button>
       </form>
+
+<div class="debug-container">
+  <h4>状态码: <span id="status-code">-</span></h4>
+  <pre id="debug-info"></pre>
+</div>
+
+<style>
+  .error-box { padding: 12px; background: #ffeef0; border-radius: 4px; margin: 10px 0; }
+  .debug-container { margin-top: 20px; padding: 15px; background: #f8f9fa; }
+  #loading { color: #007bff; }
+  #success { color: #28a745; }
+</style>
+<script>
+  document.getElementById('emailForm').addEventListener('submit', function() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('success').style.display = 'none';
+    document.querySelector('button[type="submit"]').disabled = true;
+  });
+</script>
       
       <div id="result"></div>
     </div>
@@ -220,7 +245,13 @@
         
         const data = await response.json();
         
-        if (data.success) {
+        const statusCode = document.getElementById('status-code');
+const debugInfo = document.getElementById('debug-info');
+
+statusCode.textContent = response.status;
+debugInfo.innerHTML = JSON.stringify(data, null, 2);
+
+if (data.success) {
           resultDiv.innerHTML = `<strong>发送成功!</strong><br>消息ID: ${data.messageId}`;
           resultDiv.className = 'success';
         } else {
@@ -228,6 +259,10 @@
           resultDiv.className = 'error';
         }
       } catch (error) {
+  const errorResponse = { code: error.status || 500, message: error.message };
+  document.getElementById('status-code').textContent = errorResponse.code;
+  document.getElementById('error-message').textContent = errorResponse.message;
+  document.getElementById('debug-info').innerHTML = JSON.stringify(errorResponse, null, 2);
         resultDiv.innerHTML = `<strong>请求错误:</strong><br>${error.message}`;
         resultDiv.className = 'error';
       }

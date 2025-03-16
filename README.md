@@ -98,7 +98,7 @@ POST /api
    ```bash
    npm i -g vercel
    ```
-
+> tip：如果vercel提示：vercel : 无法将“vercel”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径就把有关vercel的命令 改成 `npx vercel 命令`
 2. 登录Vercel：
    ```bash
    vercel login
