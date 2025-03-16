@@ -144,6 +144,9 @@
         <label for="to">收件人邮箱：</label>
         <input type="email" id="to" name="to" required>
         
+        <label for="to">发件人名称：</label>
+        <input type="from_name" id="from_name" name="from_name" required>
+
         <label for="subject">邮件主题：</label>
         <input type="text" id="subject" name="subject" required>
         
@@ -189,12 +192,14 @@
       e.preventDefault();
       
       const to = document.getElementById('to').value;
+      const from_name = document.getElementById('from_name').value;
       const subject = document.getElementById('subject').value;
       const content = document.getElementById('content').value;
       const contentType = document.querySelector('input[name="contentType"]:checked').value;
       
       const payload = {
         to,
+        from_name,
         subject
       };
       
