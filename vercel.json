@@ -7,5 +7,4 @@
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
   "env": {}
-  // 注意：请在Vercel平台上直接设置MAIL_USER和MAIL_PASS环境变量
 }
