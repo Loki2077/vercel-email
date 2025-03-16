@@ -121,7 +121,16 @@ module.exports = async (req, res) => {
     // 验证必要的字段
     if (!to || !subject || (!text && !html)) {
       logRequest(req, 400, '缺少必要字段');
-      return res.status(400).json({ error: '缺少必要的字段：to, subject, 和 text/html' });
+      // 判断缺哪些字段，最后一起返回
+      let message = '';
+      if (!to) {
+        message += '缺少to字段, ';
+      }else if (!subject) {
+        message += '缺少subject字段, ';
+      }else if (!text &&!html) {
+        message += '缺少text/html字段, ';
+      }
+      return res.status(400).json({ error: message });
     }
     
     // 验证邮箱格式
@@ -151,11 +160,11 @@ module.exports = async (req, res) => {
     
     // 设置邮件选项
     const mailOptions = {
-      from: from_name != null ? from_name : "Vercel Email API" + ` <${process.env.MAIL_USER}>`,
-      to,
-      subject, 
-      text,
-      html,
+        from: from_name ? `${from_name} <${process.env.MAIL_USER}>` : `Vercel Email API <${process.env.MAIL_USER}>`,
+        to,
+        subject, 
+        text,
+        html,
     };
 
     // 发送邮件
@@ -176,8 +185,8 @@ module.exports = async (req, res) => {
     // 返回友好的错误信息，不暴露敏感的错误详情
     return res.status(500).json({
       error: '发送邮件失败',
-      details: error.message,
-    //   details: process.env.NODE_ENV === 'production' ? '服务器内部错误' : error.message,
+    //   details: error.message,
+      details: process.env.NODE_ENV === 'production' ? '服务器内部错误' : error.message,
     });
   }
 };
