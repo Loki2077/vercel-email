@@ -1,8 +1,13 @@
 # Vercel Email API
 
+[中文](#chinese) | [English](#english)
+
+<a name="chinese"></a>
+## 中文
+
 这是一个基于Vercel Serverless Functions的邮件发送API服务，可以轻松集成到任何前端应用中，实现邮件发送功能。
 
-## 功能特点
+### 功能特点
 
 - 使用Nodemailer发送邮件，稳定可靠
 - 支持纯文本和HTML格式邮件
@@ -11,15 +16,15 @@
 - 内置安全特性，包括速率限制、请求验证等
 - 完整的错误处理和日志记录
 
-## 使用方法
+### 使用方法
 
-### API端点
+#### API端点
 
 ```
 POST /api
 ```
 
-### 请求参数
+#### 请求参数
 
 ```json
 {
@@ -31,7 +36,7 @@ POST /api
 }
 ```
 
-### 响应格式
+#### 响应格式
 
 成功：
 ```json
@@ -49,14 +54,14 @@ POST /api
 }
 ```
 
-## 本地开发
+### 本地开发
 
-### 准备工作
+#### 准备工作
 
 1. 确保已安装Node.js（推荐v14或更高版本）
 2. 安装Vercel CLI：`npm i -g vercel`
 
-### 安装步骤
+#### 安装步骤
 
 1. 克隆仓库：
    ```bash
@@ -68,7 +73,7 @@ POST /api
    ```bash
    npm install
    ```
-> 可以在 vercel 的环境变量配置界面，导入.env文件
+
 3. 配置环境变量：
    - **私有仓库**：可以直接创建`.env`文件，按照`.env.example`中的示例进行配置
    - **公共仓库**：建议不要创建`.env`文件（避免意外提交敏感信息），而是使用Vercel的环境变量设置功能
@@ -91,15 +96,16 @@ POST /api
    ```
    服务器将在`http://localhost:3000`启动
 
-## 部署到Vercel
+### 部署到Vercel
 
-### 使用Vercel CLI部署
+#### 使用Vercel CLI部署
 
 1. 安装Vercel CLI（如果尚未安装）：
    ```bash
    npm i -g vercel
    ```
-> tip：如果vercel提示：vercel : 无法将“vercel”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径就把有关vercel的命令 改成 `npx vercel 命令`
+   > 提示：如果vercel提示无法识别为命令，请使用 `npx vercel` 替代
+
 2. 登录Vercel：
    ```bash
    vercel login
@@ -109,11 +115,8 @@ POST /api
    ```bash
    vercel
    ```
-   按照提示完成部署配置。
 
-### 配置环境变量
-
-部署后，需要在Vercel控制台中设置环境变量：
+#### 配置环境变量
 
 1. 登录[Vercel控制台](https://vercel.com/dashboard)
 2. 选择你的项目
@@ -123,56 +126,183 @@ POST /api
    - `MAIL_PASS`：你的邮箱密码或授权码
    - 其他可选变量（参考`.env.example`）
 
-> **安全提示**：在Vercel控制台设置的环境变量会被加密存储，比直接在代码中或`.env`文件中设置更安全。对于公共仓库，强烈建议使用此方法配置敏感信息。
+### 最佳实践
 
-## 注意事项
+1. **错误处理**
+   - 始终在代码中实现适当的错误处理
+   - 检查API错误和网络故障
+   - 对临时性故障实现重试逻辑
 
-### 邮箱配置
+2. **速率限制**
+   - 注意速率限制（默认每IP每小时10次请求）
+   - 对批量操作实现客户端限流
+   - 考虑使用队列系统处理大量发送
 
-- 确保邮箱服务提供商允许SMTP访问，某些免费邮箱可能限制第三方访问
-- **QQ邮箱配置**：
-  1. 登录QQ邮箱网页版
-  2. 点击「设置」→「账户」
-  3. 找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务」并开启
-  4. 获取授权码（而非QQ密码）作为`MAIL_PASS`的值
-- **Gmail配置**：
-  1. 开启「两步验证」
-  2. 生成「应用专用密码」作为`MAIL_PASS`的值
+3. **安全性**
+   - 永远不要在客户端代码中暴露敏感信息
+   - 使用环境变量进行配置
+   - 实现适当的输入验证
 
-### 安全建议
+### 故障排除
 
-- **环境变量保护**：
-  - 私有仓库：确保`.env`文件已添加到`.gitignore`中
-  - 公共仓库：不要创建`.env`文件，使用Vercel环境变量设置
-- **速率限制**：默认限制每IP每小时10次请求，可通过环境变量调整
-  - 生产环境建议使用Redis等分布式存储实现更可靠的速率限制
-- **监控与维护**：
-  - 定期检查Vercel日志，监控API使用情况
-  - 关注可疑的访问模式，及时调整安全策略
+1. **邮件发送失败**
+   - 验证邮箱配置是否正确
+   - 确保SMTP服务已启用
+   - 检查收件人邮箱格式是否有效
 
-### 常见问题
+2. **速率限制触发**
+   - 检查是否有异常请求模式
+   - 根据需要调整`RATE_LIMIT_MAX_REQUESTS`
+   - 实现请求队列
 
-- **邮件发送失败**：检查邮箱配置是否正确，SMTP服务是否开启
-- **速率限制触发**：检查是否有异常请求，或调整`RATE_LIMIT_MAX_REQUESTS`值
-- **CORS错误**：确认前端域名是否已添加到`ALLOWED_ORIGINS`环境变量中
+3. **CORS错误**
+   - 确认前端域名是否已添加到`ALLOWED_ORIGINS`
+   - 检查请求头是否正确
+   - 确保协议（http/https）匹配
 
-## 安全特性
+### 贡献指南
 
-- **速率限制**: 防止API被滥用，默认限制每个IP每小时10次请求
-  - 可通过`RATE_LIMIT_MAX_REQUESTS`和`RATE_LIMIT_WINDOW`环境变量自定义
-- **CORS保护**: 限制特定域名访问API，防止未授权的跨域请求
-  - 通过`ALLOWED_ORIGINS`环境变量配置允许的域名列表
-- **请求体大小限制**: 防止大量数据攻击，限制请求体大小为1MB
-  - 可通过`MAX_REQUEST_SIZE`环境变量自定义
-- **邮件内容大小限制**: 限制邮件内容大小为100KB
-  - 可通过`MAX_EMAIL_CONTENT_SIZE`环境变量自定义
-- **环境变量验证**: 在启动时检查必要的环境变量，确保服务正常运行
-- **日志记录**: 记录所有请求，包括时间戳、IP地址、状态和消息，便于追踪潜在的滥用行为
-- **邮箱格式验证**: 验证收件人邮箱格式的有效性，防止无效邮件发送
+欢迎贡献！如果你想提交改进，请随时提交Pull Request。对于重大更改，请先开issue讨论你想要改变的内容。
 
-## 使用示例
+1. Fork本仓库
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个Pull Request
 
-### 使用fetch API发送请求
+### 许可证
+
+本项目采用MIT许可证 - 查看[LICENSE](LICENSE)文件了解详情。
+
+---
+
+<a name="english"></a>
+## English
+
+A reliable email sending API service based on Vercel Serverless Functions that can be easily integrated into any frontend application.
+
+### Features
+
+- Stable and reliable email sending using Nodemailer
+- Support for both plain text and HTML format emails
+- Cross-Origin Resource Sharing (CORS) support with configurable domain allowlist
+- Deployed on Vercel platform, no server maintenance required
+- Built-in security features including rate limiting and request validation
+- Comprehensive error handling and logging
+
+### Quick Start
+
+#### API Endpoint
+
+```
+POST /api
+```
+
+#### Request Parameters
+
+```json
+{
+  "to": "recipient@example.com",
+  "subject": "Email Subject",
+  "text": "Plain text content (optional, either html or text must be provided)",
+  "html": "HTML format content (optional, either html or text must be provided)",
+  "from_name": "Sender Name (optional)"
+}
+```
+
+#### Response Format
+
+Success:
+```json
+{
+  "success": true,
+  "messageId": "email-id"
+}
+```
+
+Failure:
+```json
+{
+  "error": "Error message",
+  "details": "Detailed error information"
+}
+```
+
+### Local Development
+
+#### Prerequisites
+
+1. Node.js (v14 or higher recommended)
+2. Vercel CLI: `npm i -g vercel`
+
+#### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Loki2077/vercel-email.git
+   cd vercel-email
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   - For private repositories: Create a `.env` file following the `.env.example` template
+   - For public repositories: Use Vercel's environment variables settings
+
+   Basic configuration example:
+   ```
+   # Required
+   MAIL_USER=your-email@example.com
+   MAIL_PASS=your-email-password-or-app-specific-password
+   
+   # Optional (defaults will be used if not set)
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=465
+   MAIL_SECURE=true
+   ```
+
+4. Start the development server:
+   ```bash
+   vercel dev
+   ```
+   Server will start at `http://localhost:3000`
+
+### Deployment
+
+#### Using Vercel CLI
+
+1. Install Vercel CLI (if not already installed):
+   ```bash
+   npm i -g vercel
+   ```
+   > Note: If you encounter the error "vercel is not recognized as a cmdlet", use `npx vercel` instead
+
+2. Login to Vercel:
+   ```bash
+   vercel login
+   ```
+
+3. Deploy:
+   ```bash
+   vercel
+   ```
+
+#### Environment Variables Setup
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Select your project
+3. Navigate to Settings → Environment Variables
+4. Add the following variables:
+   - `MAIL_USER`: Your email address
+   - `MAIL_PASS`: Your email password or app-specific password
+   - Other optional variables (refer to `.env.example`)
+
+### Usage Examples
+
+#### Using fetch API
 
 ```javascript
 async function sendEmail() {
@@ -184,49 +314,88 @@ async function sendEmail() {
       },
       body: JSON.stringify({
         to: 'recipient@example.com',
-        subject: '测试邮件',
-        text: '这是一封测试邮件',
-        // 或者使用HTML格式
-        // html: '<h1>这是一封测试邮件</h1><p>Hello World!</p>'
+        subject: 'Test Email',
+        text: 'This is a test email',
+        // Or use HTML format
+        // html: '<h1>This is a test email</h1><p>Hello World!</p>'
       }),
     });
     
     const data = await response.json();
     
     if (data.success) {
-      console.log('邮件发送成功:', data.messageId);
+      console.log('Email sent successfully:', data.messageId);
     } else {
-      console.error('邮件发送失败:', data.error);
+      console.error('Failed to send email:', data.error);
     }
   } catch (error) {
-    console.error('请求出错:', error);
+    console.error('Request error:', error);
   }
 }
 ```
 
-### 使用axios发送请求
+#### Using axios
 
 ```javascript
 async function sendEmail() {
   try {
     const response = await axios.post('https://your-vercel-app.vercel.app/api', {
       to: 'recipient@example.com',
-      subject: '测试邮件',
-      text: '这是一封测试邮件'
+      subject: 'Test Email',
+      text: 'This is a test email'
     });
     
-    console.log('邮件发送成功:', response.data.messageId);
+    console.log('Email sent successfully:', response.data.messageId);
   } catch (error) {
-    console.error('邮件发送失败:', error.response?.data?.error || error.message);
+    console.error('Failed to send email:', error.response?.data?.error || error.message);
   }
 }
 ```
 
-## 自定义与扩展
+### Best Practices
 
-你可以根据需要扩展此API的功能：
+1. **Error Handling**
+   - Always implement proper error handling in your code
+   - Check for both API errors and network failures
+   - Implement retry logic for transient failures
 
-- 添加更多邮件选项，如抄送(cc)、密送(bcc)、附件等
-- 集成邮件模板系统，如使用Handlebars或EJS
-- 添加更多安全特性，如API密钥验证
-- 实现邮件队列系统，处理大量邮件发送请求
+2. **Rate Limiting**
+   - Be mindful of the rate limits (10 requests per hour per IP by default)
+   - Implement client-side throttling for bulk operations
+   - Consider using a queue system for high-volume sending
+
+3. **Security**
+   - Never expose sensitive information in client-side code
+   - Use environment variables for configuration
+   - Implement proper input validation
+
+### Troubleshooting
+
+1. **Email Sending Fails**
+   - Verify email configuration is correct
+   - Ensure SMTP service is enabled
+   - Check for valid recipient email format
+
+2. **Rate Limit Exceeded**
+   - Check for unusual request patterns
+   - Adjust `RATE_LIMIT_MAX_REQUESTS` if needed
+   - Implement request queuing
+
+3. **CORS Errors**
+   - Verify frontend domain is added to `ALLOWED_ORIGINS`
+   - Check for proper request headers
+   - Ensure protocol (http/https) matches
+
+### Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
